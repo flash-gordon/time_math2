@@ -68,7 +68,14 @@ module TimeMath
     def extract_component(tm, component)
       case component
       when :subsec, :sec_fraction
-        tm.is_a?(Time) ? tm.subsec : tm.send(:sec_fraction)
+        case tm
+        when Time
+          tm.subsec
+        when Date
+          0
+        else
+          tm.public_send(:sec_fraction)
+        end
       when *COMMON_UNITS
         tm.send(component)
       end
